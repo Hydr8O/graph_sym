@@ -1,0 +1,5 @@
+.vscode/
+build/
+build_imgui-sfml/
+imgui/
+CMakeFiles
