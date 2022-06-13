@@ -13,6 +13,7 @@
 
 #include <algorithms/algo_graph.hpp>
 #include <graphics/node.hpp>
+#include <graphics/edge.hpp>
 #include <graphics/graphics_graph.hpp>
 #include <graphics/state.hpp>
 #include <graphics/graph_event_handler.hpp>
@@ -36,16 +37,14 @@ int main() {
     font.loadFromFile("../fonts/railway/railway.otf");
     std::unordered_map<int, std::string> input_fields;
 
-    bool creating_node = false;
-    std::vector<std::string> nodes = algo_graph.get_nodes();
-    std::cout << nodes.size() << std::endl;
-    sf::VertexArray line(sf::Lines, 2);
+    graphics::Edge edge;
     
     bool mouse_pressed = false;
     while (window.isOpen()) {
         sf::Event event;
         ImGuiIO& io = ImGui::GetIO();
         const NodeArray& nodes = graphics_graph.get_nodes();
+        const EdgeArray& edges = graphics_graph.get_edges();
 
         while (window.pollEvent(event)) {
             ImGui::SFML::ProcessEvent(window, event);
@@ -67,7 +66,7 @@ int main() {
                         }
 
                         if (state.edge_connection()) {
-                            graph_event_handler.handle_edge_connection(event, state, line);
+                            graph_event_handler.handle_edge_connection(event, state);
                         }
 
                         if (state.vertex_creation()) {
@@ -77,13 +76,11 @@ int main() {
             } 
 
             if (state.vertex_mode()) {
-                line[0].position = {0.f, 0.f};
-                line[1].position = {0.f, 0.f};
+                edge.reset_position();
             }
 
-            
             if (state.edge_creation()) { //edge creation
-                graph_event_handler.handle_edge_creation(event, state, window, line);
+                graph_event_handler.handle_edge_creation(event, state, window);
             }
             
         }
@@ -125,11 +122,22 @@ int main() {
         ImGui::End();
 
         ImGui::Begin("Edges");
-        
+        for (auto& [edge_id, edge] : edges) {
+            std::string text = std::to_string(edge->get_src_id()) + "->" + std::to_string(edge->get_dst_id());
+            ImGui::Text(text.c_str());
+        }
         ImGui::End();
 
         window.clear();
-        window.draw(line);
+
+        if (state.edge_creation()) {
+            window.draw(state.current_edge->get_body());
+        }
+
+        for (auto& [edge_id, edge] : edges) {
+            window.draw(edge->get_body());
+        }
+        
         for (auto& [node_id, node] : nodes) {
             node->set_text(input_fields[node_id], font);
             

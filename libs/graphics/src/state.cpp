@@ -14,6 +14,9 @@ bool graphics::State::edge_connection() {
 }
 
 bool graphics::State::edge_creation() {
+    if (current_edge == nullptr) {
+        current_edge = std::make_shared<graphics::Edge>();
+    }
     return current_selected != -1 && current_mode == EdgeMode;
 }
 

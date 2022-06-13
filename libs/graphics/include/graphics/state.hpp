@@ -2,7 +2,9 @@
 #define STATE_HPP_
 
 #include <unordered_map>
+#include <memory>
 #include <string>
+#include <graphics/edge.hpp>
 
 namespace graphics {
     enum Mode {
@@ -16,6 +18,7 @@ namespace graphics {
         Mode current_mode = VertexMode;
         int current_selected = -1;
         int current_dst = -1;
+        std::shared_ptr<graphics::Edge> current_edge = nullptr; 
         bool src_vertex_selection();
         bool dst_vertex_selection();
         bool edge_connection();

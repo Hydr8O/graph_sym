@@ -7,6 +7,12 @@ void graphics::Graph::add_node(std::shared_ptr<Node> node) {
     m_nodes[m_node_id] = node;
 }
 
+void graphics::Graph::add_edge(std::shared_ptr<graphics::Edge> edge) {
+    m_edge_id++;
+    edge->set_id(m_edge_id);
+    m_edges[m_edge_id] = edge;
+}
+
 void graphics::Graph::add_label(std::string label) {
     m_node_labels.insert(label);
 }
@@ -24,6 +30,10 @@ void graphics::Graph::print_labels() {
 
 const NodeArray& graphics::Graph::get_nodes() const {
     return m_nodes;
+}
+
+const EdgeArray &graphics::Graph::get_edges() const {
+    return m_edges;
 }
 
 int graphics::Graph::get_next_node_id() const {

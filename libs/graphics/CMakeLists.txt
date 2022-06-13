@@ -6,6 +6,7 @@ set(
     src/node.cpp
     src/state.cpp
     src/graph_event_handler.cpp
+    src/edge.cpp
 )
 
 

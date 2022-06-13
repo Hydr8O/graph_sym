@@ -27,11 +27,16 @@ void graphics::GraphEventHandler::handle_dst_vertex_selection(const sf::Event& e
     }
 }
 
-void graphics::GraphEventHandler::handle_edge_connection(const sf::Event &event, graphics::State &state, sf::VertexArray& line) {
+void graphics::GraphEventHandler::handle_edge_connection(const sf::Event &event, graphics::State &state) {
     const NodeArray& nodes = m_graph.get_nodes();
-    int dst_node = state.current_dst;
-    const sf::Vector2f& node_position = nodes.at(dst_node)->get_body().getPosition();
-    line[1].position = node_position;
+    const EdgeArray& edges = m_graph.get_edges();
+    int dst_node_id = state.current_dst;
+    std::shared_ptr<Node> dst_node = nodes.at(dst_node_id);
+    const sf::Vector2f& node_position = dst_node->get_body().getPosition();
+    state.current_edge->set_dst_position(node_position);
+    state.current_edge->set_dst_id(dst_node->get_id());
+    m_graph.add_edge(state.current_edge);
+    state.current_edge = nullptr;
     state.current_dst = -1;
 }
 
@@ -47,11 +52,13 @@ void graphics::GraphEventHandler::handle_vertex_creation(const sf::Event &event,
     input_fields[node_id] = std::to_string(node_id);
 }
 
-void graphics::GraphEventHandler::handle_edge_creation(const sf::Event &event, graphics::State &state, const sf::RenderWindow& window, sf::VertexArray& line) {
+void graphics::GraphEventHandler::handle_edge_creation(const sf::Event &event, graphics::State &state, const sf::RenderWindow& window) {
     const NodeArray& nodes = m_graph.get_nodes();
     int current_selected = state.current_selected;
-    const sf::Vector2f& node_position = nodes.at(current_selected)->get_body().getPosition();
+    const std::shared_ptr<Node> current_node = nodes.at(current_selected);
+    const sf::Vector2f& node_position = current_node->get_body().getPosition();
     const sf::Vector2i& mouse_position = sf::Mouse::getPosition(window);
-    line[0].position = node_position;
-    line[1].position = window.mapPixelToCoords(mouse_position);
+    state.current_edge->set_src_position(node_position);
+    state.current_edge->set_src_id(current_node->get_id());
+    state.current_edge->set_dst_position(window.mapPixelToCoords(mouse_position));
 }
