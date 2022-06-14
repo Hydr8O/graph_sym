@@ -16,7 +16,7 @@ namespace algo {
         ~Graph();
         void add_edge(std::string src, std::string dst);
         void remove_edge(std::string src, std::string dst);
-        AdjacencyList get_edges();
+        AdjacencyList get_edges() const;
         std::vector<std::string> get_nodes();
     };
 }

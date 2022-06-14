@@ -7,10 +7,14 @@ void graphics::Graph::add_node(std::shared_ptr<Node> node) {
     m_nodes[m_node_id] = node;
 }
 
-void graphics::Graph::add_edge(std::shared_ptr<graphics::Edge> edge) {
+void graphics::Graph::add_edge(std::shared_ptr<graphics::Edge> new_edge) {
+    if (edge_exsists(new_edge)) {
+        return;
+    }
+
     m_edge_id++;
-    edge->set_id(m_edge_id);
-    m_edges[m_edge_id] = edge;
+    new_edge->set_id(m_edge_id);
+    m_edges[m_edge_id] = new_edge;
 }
 
 void graphics::Graph::add_label(std::string label) {
@@ -45,5 +49,16 @@ bool graphics::Graph::label_exists(const std::string& label) {
         return true;
     }
 
+    return false;
+}
+
+bool graphics::Graph::edge_exsists(const std::shared_ptr<graphics::Edge>& new_edge) {
+    for (const auto& [edge_id, edge] : m_edges) {
+        bool same_src = new_edge->get_src_id() == edge->get_src_id();
+        bool same_dst = new_edge->get_dst_id() == edge->get_dst_id();
+        if (same_src && same_dst) {
+            return true;
+        }
+    }
     return false;
 }

@@ -21,7 +21,9 @@ void algo::Graph::add_edge(std::string src, std::string dst) {
     }
 
     m_adjacency_list[src].push_back(dst);
-    m_adjacency_list[dst].push_back(src);
+    if (!m_adjacency_list.count(dst)) {
+        m_adjacency_list[dst] = {};
+    }
 }
 
 void algo::Graph::remove_edge(std::string src, std::string dst) {
@@ -46,6 +48,6 @@ std::vector<std::string> algo::Graph::get_nodes() {
     return nodes;
 }
 
-AdjacencyList algo::Graph::get_edges() {
+AdjacencyList algo::Graph::get_edges() const {
     return m_adjacency_list;
 }

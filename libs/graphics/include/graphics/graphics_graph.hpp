@@ -20,16 +20,17 @@ namespace graphics {
             int m_edge_id = 0;
             std::unordered_set<std::string> m_node_labels;
 
-
         public:
             void add_node(std::shared_ptr<Node> node);
-            void add_edge(std::shared_ptr<Edge> edge);
+            void add_edge(std::shared_ptr<Edge> new_edge);
             void add_label(std::string label);
             void remove_label(std::string label);
             const EdgeArray& get_edges() const;
             void print_labels();
             int get_next_node_id() const;
+            
             bool label_exists(const std::string& label);
+            bool edge_exsists(const std::shared_ptr<graphics::Edge>& new_edge);
             const NodeArray& get_nodes() const;
     };
 }

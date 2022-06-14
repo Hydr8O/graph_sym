@@ -12,6 +12,7 @@
 #include <SFML/System.hpp>
 
 #include <algorithms/algo_graph.hpp>
+#include <algorithms/algorithm_runner.hpp>
 #include <graphics/node.hpp>
 #include <graphics/edge.hpp>
 #include <graphics/graphics_graph.hpp>
@@ -25,6 +26,7 @@ int main() {
     graphics::State state;
     algo::Graph algo_graph;
     graphics::Graph graphics_graph;
+    algo::AlgorithmRunner algo_runner;
     graphics::GraphEventHandler graph_event_handler(graphics_graph);
     std::unordered_map<graphics::Mode, std::string> modes;
     modes[graphics::VertexMode] = "Vertex";
@@ -79,6 +81,25 @@ int main() {
                 edge.reset_position();
             }
 
+            if (state.creation_finished) {
+                for (auto& [edge_id, edge] : edges) {
+                    const std::shared_ptr<Node>& src_node = nodes.at(edge->get_src_id());
+                    const std::string& src_label = src_node->get_text().getString();
+
+                    const std::shared_ptr<Node>& dst_node = nodes.at(edge->get_dst_id());
+                    const std::string& dst_label = dst_node->get_text().getString();
+                    algo_graph.add_edge(src_label, dst_label);
+                }
+                algo_runner.set_graph(algo_graph);
+                std::vector<std::string> traversal = algo_runner.run_bfs("1");
+                for (const auto& node : traversal) {
+                    std::cout << node << std::endl;
+                }
+                state.creation_finished = false;
+            }
+
+            
+
             if (state.edge_creation()) { //edge creation
                 graph_event_handler.handle_edge_creation(event, state, window);
             }
@@ -86,6 +107,12 @@ int main() {
         }
         ImGui::SFML::Update(window, deltaClock.restart());
         std::unordered_set<std::string> input_values;
+        ImGui::Begin("Main");
+        if (ImGui::Button("Finish creation")) {
+            state.creation_finished = true;
+        }
+        ImGui::End();
+
         ImGui::Begin("Mode");
         std::string mode_text = "Current Mode: " + modes[state.current_mode];
         ImGui::Text(mode_text.c_str());
@@ -120,7 +147,6 @@ int main() {
             }
         }
         ImGui::End();
-
         ImGui::Begin("Edges");
         for (auto& [edge_id, edge] : edges) {
             std::string text = std::to_string(edge->get_src_id()) + "->" + std::to_string(edge->get_dst_id());
