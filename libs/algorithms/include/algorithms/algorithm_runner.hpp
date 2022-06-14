@@ -2,7 +2,7 @@
 #define ALGORITHM_RUNNER_HPP_
 
 #include <queue>
-#include <algorithms/algo_graph.hpp>
+#include <graphics/graphics_graph.hpp>
 #include <unordered_set>
 #include <vector>
 
@@ -10,13 +10,13 @@
 namespace algo {
     class AlgorithmRunner {
     private:
-        algo::Graph m_algo_graph;
+        graphics::Graph m_graph;
     public:
-        AlgorithmRunner(const algo::Graph& algo_graph);
+        AlgorithmRunner(const graphics::Graph& graphics_graph);
         AlgorithmRunner();
-        void set_graph(const algo::Graph& algo_graph);
-        std::vector<std::string> run_bfs(const std::string& src);
-        std::vector<std::string> run_dfs(const std::string& dst);
+        void set_graph(const graphics::Graph& graphics_graph);
+        std::vector<int> run_bfs(int src);
+        std::vector<int> run_dfs(int dst);
     };
 }
 

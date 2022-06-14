@@ -7,6 +7,21 @@ void graphics::Graph::add_node(std::shared_ptr<Node> node) {
     m_nodes[m_node_id] = node;
 }
 
+void graphics::Graph::create_adjacency_list() {
+    for (auto& [edge_id, edge] : m_edges) {
+        int src_id = edge->get_src_id();
+        int dst_id = edge->get_dst_id();
+        add_path(src_id, dst_id);
+    }
+}
+
+void graphics::Graph::add_path(int src, int dst) {
+    m_adjacency_list[src].push_back(dst);
+    if (!m_adjacency_list.count(dst)) {
+        m_adjacency_list[dst] = {};
+    }
+}
+
 void graphics::Graph::add_edge(std::shared_ptr<graphics::Edge> new_edge) {
     if (edge_exsists(new_edge)) {
         return;
@@ -38,6 +53,10 @@ const NodeArray& graphics::Graph::get_nodes() const {
 
 const EdgeArray &graphics::Graph::get_edges() const {
     return m_edges;
+}
+
+const AdjacencyList &graphics::Graph::get_paths() const {
+    return m_adjacency_list;
 }
 
 int graphics::Graph::get_next_node_id() const {

@@ -11,7 +11,6 @@
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
 
-#include <algorithms/algo_graph.hpp>
 #include <algorithms/algorithm_runner.hpp>
 #include <graphics/node.hpp>
 #include <graphics/edge.hpp>
@@ -19,13 +18,23 @@
 #include <graphics/state.hpp>
 #include <graphics/graph_event_handler.hpp>
 
+#define WINDOW_WIDTH 1280
+#define WINDOW_HEIGHT 1020
+
 int main() {
-    sf::RenderWindow window(sf::VideoMode(640, 480), "SFML", sf::Style::Default);
-    ImGui::SFML::Init(window);
+    sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "SFML", sf::Style::Default);
+    if (!ImGui::SFML::Init(window)) {
+        std::cout << "Failed to init window" << std::endl;
+    }
     sf::Event event;
+    sf::Clock clock;
+    float duration = 0.f;
     graphics::State state;
-    algo::Graph algo_graph;
+    sf::Color animation_color;
+    std::vector<int> traversal;
+    int red = 255, green = 255;
     graphics::Graph graphics_graph;
+    int current_animating_node = 0;
     algo::AlgorithmRunner algo_runner;
     graphics::GraphEventHandler graph_event_handler(graphics_graph);
     std::unordered_map<graphics::Mode, std::string> modes;
@@ -43,6 +52,8 @@ int main() {
     
     bool mouse_pressed = false;
     while (window.isOpen()) {
+        sf::Time dt = clock.restart();
+        duration += dt.asSeconds();
         sf::Event event;
         ImGuiIO& io = ImGui::GetIO();
         const NodeArray& nodes = graphics_graph.get_nodes();
@@ -61,6 +72,7 @@ int main() {
                     } 
                     
                     if (event.mouseButton.button == sf::Mouse::Left) {
+                        state.ready_to_run_algorithms = false;
                         if (state.src_vertex_selection()) {
                             graph_event_handler.handle_src_vertex_selection(event, state);
                         } else if (state.dst_vertex_selection()) {
@@ -76,40 +88,68 @@ int main() {
                         }
                     }
             } 
-
-            if (state.vertex_mode()) {
-                edge.reset_position();
-            }
-
-            if (state.creation_finished) {
-                for (auto& [edge_id, edge] : edges) {
-                    const std::shared_ptr<Node>& src_node = nodes.at(edge->get_src_id());
-                    const std::string& src_label = src_node->get_text().getString();
-
-                    const std::shared_ptr<Node>& dst_node = nodes.at(edge->get_dst_id());
-                    const std::string& dst_label = dst_node->get_text().getString();
-                    algo_graph.add_edge(src_label, dst_label);
-                }
-                algo_runner.set_graph(algo_graph);
-                std::vector<std::string> traversal = algo_runner.run_bfs("1");
-                for (const auto& node : traversal) {
-                    std::cout << node << std::endl;
-                }
-                state.creation_finished = false;
-            }
-
-            
-
-            if (state.edge_creation()) { //edge creation
-                graph_event_handler.handle_edge_creation(event, state, window);
-            }
-            
         }
+
+        if (state.vertex_mode()) {
+            edge.reset_position();
+        }
+
+        if (state.creation_finished) {
+            graphics_graph.create_adjacency_list();
+            
+            state.creation_finished = false;
+            state.ready_to_run_algorithms = true;
+        }
+
+        if (state.running_bfs) {
+            algo_runner.set_graph(graphics_graph);
+            traversal = algo_runner.run_bfs(1);
+            state.running_bfs = false;
+            state.animation = true;
+        }
+
+        if (state.animation && duration > 0.01f && !traversal.empty()) {
+            red -= 5;
+            green -= 5;
+            if (red > 0 && green > 0) {
+                duration = 0;
+                animation_color = sf::Color(red, green, 255, 255);
+                const std::shared_ptr<Node>& node = nodes.at(traversal[current_animating_node]);
+                node->set_color(animation_color);
+            } else {
+                red = 255;
+                green = 255;
+                current_animating_node++;
+            }
+        }
+
+        if (state.animation && current_animating_node >= traversal.size()) {
+            std::shared_ptr<Node> node;
+            for (int node_id : traversal) {
+                node = nodes.at(node_id);
+                node->set_color(sf::Color::White);
+            }
+            state.animation = false;
+            traversal.clear();
+            current_animating_node = 0;
+        }
+        
+
+        if (state.edge_creation()) { //edge creation
+            graph_event_handler.handle_edge_creation(event, state, window);
+        }
+            
         ImGui::SFML::Update(window, deltaClock.restart());
         std::unordered_set<std::string> input_values;
         ImGui::Begin("Main");
         if (ImGui::Button("Finish creation")) {
             state.creation_finished = true;
+        }
+
+        if (state.ready_to_run_algorithms) {
+            if (ImGui::Button("BFS")) {
+                state.running_bfs = true;
+            }
         }
         ImGui::End();
 

@@ -11,11 +11,13 @@
 
 typedef std::unordered_map<int, std::shared_ptr<Node>> NodeArray;
 typedef std::unordered_map<int, std::shared_ptr<graphics::Edge>> EdgeArray;
+typedef std::unordered_map<int, std::vector<int>> AdjacencyList;
 namespace graphics {
     class Graph {
         private:
             NodeArray m_nodes;
             EdgeArray m_edges;
+            AdjacencyList m_adjacency_list;
             int m_node_id = 0;
             int m_edge_id = 0;
             std::unordered_set<std::string> m_node_labels;
@@ -23,15 +25,21 @@ namespace graphics {
         public:
             void add_node(std::shared_ptr<Node> node);
             void add_edge(std::shared_ptr<Edge> new_edge);
+            void create_adjacency_list();
+            void add_path(int src, int dst);
             void add_label(std::string label);
             void remove_label(std::string label);
-            const EdgeArray& get_edges() const;
             void print_labels();
+
             int get_next_node_id() const;
             
             bool label_exists(const std::string& label);
             bool edge_exsists(const std::shared_ptr<graphics::Edge>& new_edge);
+
             const NodeArray& get_nodes() const;
+            const EdgeArray& get_edges() const;
+            const AdjacencyList& get_paths() const;
+
     };
 }
 
