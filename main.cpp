@@ -56,6 +56,7 @@ int main() {
         duration += dt.asSeconds();
         sf::Event event;
         ImGuiIO& io = ImGui::GetIO();
+        io.ConfigFlags = ImGuiConfigFlags_DockingEnable;
         const NodeArray& nodes = graphics_graph.get_nodes();
         const EdgeArray& edges = graphics_graph.get_edges();
 
@@ -70,9 +71,8 @@ int main() {
                     if (io.WantCaptureMouse) {
                         break;
                     } 
-                    
+                    state.ready_to_run_algorithms = false;
                     if (event.mouseButton.button == sf::Mouse::Left) {
-                        state.ready_to_run_algorithms = false;
                         if (state.src_vertex_selection()) {
                             graph_event_handler.handle_src_vertex_selection(event, state);
                         } else if (state.dst_vertex_selection()) {
@@ -112,7 +112,14 @@ int main() {
             traversal = algo_runner.run_bfs(1);
             state.running_bfs = false;
             state.animation = true;
+        } else if (state.running_dfs) {
+            algo_runner.set_graph(graphics_graph);
+            traversal = algo_runner.run_dfs(1);
+            state.running_dfs = false;
+            state.animation = true;
         }
+
+        
 
         if (state.animation && duration > 0.01f && !traversal.empty()) {
             red -= 5;
@@ -155,6 +162,10 @@ int main() {
         if (state.ready_to_run_algorithms) {
             if (ImGui::Button("BFS")) {
                 state.running_bfs = true;
+            }
+
+            if (ImGui::Button("DFS")) {
+                state.running_dfs = true;
             }
         }
         ImGui::End();

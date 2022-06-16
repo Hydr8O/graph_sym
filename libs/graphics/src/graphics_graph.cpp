@@ -8,6 +8,7 @@ void graphics::Graph::add_node(std::shared_ptr<Node> node) {
 }
 
 void graphics::Graph::create_adjacency_list() {
+    m_adjacency_list.clear();
     for (auto& [edge_id, edge] : m_edges) {
         int src_id = edge->get_src_id();
         int dst_id = edge->get_dst_id();
