@@ -4,13 +4,19 @@ void graphics::GraphEventHandler::handle_src_vertex_selection(const sf::Event& e
     float x = event.mouseButton.x;
     float y = event.mouseButton.y;
     const NodeArray& nodes = m_graph.get_nodes();
+    bool any_selected = false;
     for (const auto& [node_id, node] : nodes) {
         if (node->clicked(x, y)) {
             state.current_selected = node->get_id();
+            any_selected = true;
             node->set_color(sf::Color::Green);
         } else {
             node->set_color(sf::Color::White);
         }
+    }
+
+    if (!any_selected) {
+        state.current_selected = -1;
     }
 }
 
@@ -50,6 +56,30 @@ void graphics::GraphEventHandler::handle_vertex_creation(const sf::Event &event,
     int node_id = node->get_id();
     node->set_text(std::to_string(node_id), font);
     input_fields[node_id] = std::to_string(node_id);
+}
+
+void graphics::GraphEventHandler::handle_vertex_deletion(const sf::Event &event, graphics::State &state, std::unordered_map<int, std::string>& input_fields) {
+    float x = event.mouseButton.x;
+    float y = event.mouseButton.y;
+    const NodeArray& nodes = m_graph.get_nodes();
+    int node_for_removal_id = -1;
+    for (const auto& [node_id, node] : nodes) {
+        if (node->clicked(x, y)) {
+            node_for_removal_id = node_id;
+            break;
+        }
+    }
+
+    if (node_for_removal_id != -1) {
+        m_graph.remove_node(node_for_removal_id);
+        m_graph.remove_edges(node_for_removal_id);
+
+        auto it = input_fields.find(node_for_removal_id);
+        if (it != input_fields.end()) {
+            input_fields.erase(it);
+        }
+    }
+
 }
 
 void graphics::GraphEventHandler::handle_edge_creation(const sf::Event &event, graphics::State &state, const sf::RenderWindow& window) {

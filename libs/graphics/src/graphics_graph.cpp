@@ -40,6 +40,30 @@ void graphics::Graph::remove_label(std::string label) {
     m_node_labels.erase(label);
 }
 
+void graphics::Graph::remove_node(int node_id) {
+    auto it = m_nodes.find(node_id);
+    if (it != m_nodes.end()) {
+        m_nodes.erase(it);
+    }
+}
+
+void graphics::Graph::remove_edges(int node_id) {
+    std::vector<int> edge_for_removal_ids = {};
+    for (const auto& [edge_id, edge] : m_edges) {
+        if (edge->get_src_id() == node_id || edge->get_dst_id() == node_id) {
+            edge_for_removal_ids.push_back(edge_id);
+        }
+    }
+
+    for (int id : edge_for_removal_ids) {
+        auto it = m_edges.find(id);
+        if (it != m_edges.end()) {
+            m_edges.erase(it);
+        }
+    }
+
+}
+
 void graphics::Graph::print_labels() {
     for (const std::string& label : m_node_labels) {
         std::cout << label << " ";

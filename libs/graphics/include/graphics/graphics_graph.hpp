@@ -29,6 +29,8 @@ namespace graphics {
             void add_path(int src, int dst);
             void add_label(std::string label);
             void remove_label(std::string label);
+            void remove_node(int node_id);
+            void remove_edges(int node_id);
             void print_labels();
 
             int get_next_node_id() const;

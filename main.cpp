@@ -86,8 +86,14 @@ int main() {
                         if (state.vertex_creation()) {
                             graph_event_handler.handle_vertex_creation(event, state, font, input_fields);
                         }
+                        
+                    } else if (event.mouseButton.button == sf::Mouse::Right) {
+                        graph_event_handler.handle_vertex_deletion(event, state, input_fields);
+                        std::cout << "Event handled" << std::endl;
                     }
-            } 
+
+
+            }
         }
 
         if (state.vertex_mode()) {

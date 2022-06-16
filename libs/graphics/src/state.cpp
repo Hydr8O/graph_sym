@@ -10,7 +10,7 @@ bool graphics::State::dst_vertex_selection() {
 }
 
 bool graphics::State::edge_connection() {
-    return current_selected == -1 && current_dst != -1;
+    return current_selected == -1 && current_dst != -1 && current_mode == EdgeMode;
 }
 
 bool graphics::State::edge_creation() {
