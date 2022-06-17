@@ -34,6 +34,7 @@ int main() {
     std::vector<int> traversal;
     int red = 255, green = 255;
     graphics::Graph graphics_graph;
+    std::string starting_vertex = "1";
     int current_animating_node = 0;
     algo::AlgorithmRunner algo_runner;
     graphics::GraphEventHandler graph_event_handler(graphics_graph);
@@ -108,18 +109,31 @@ int main() {
         }
 
         if (state.running_bfs) {
+            state.ready_to_run_algorithms = false;
             algo_runner.set_graph(graphics_graph);
-            traversal = algo_runner.run_bfs(1);
+            int starting_node_id = -1;
+            for (auto& [node_id, node] : nodes) {
+                if (node->get_text().getString() == starting_vertex) {
+                    starting_node_id = node_id;
+                }
+            }
+            traversal = algo_runner.run_bfs(starting_node_id);
             state.running_bfs = false;
             state.animation = true;
         } else if (state.running_dfs) {
             algo_runner.set_graph(graphics_graph);
-            traversal = algo_runner.run_dfs(1);
+            state.ready_to_run_algorithms = false;
+            int starting_node_id = -1;
+            for (auto& [node_id, node] : nodes) {
+                if (node->get_text().getString() == starting_vertex) {
+                    starting_node_id = node_id;
+                }
+            }
+            traversal = algo_runner.run_dfs(starting_node_id);
             state.running_dfs = false;
             state.animation = true;
         }
 
-        
 
         if (state.animation && duration > 0.01f && !traversal.empty()) {
             red -= 5;
@@ -143,6 +157,7 @@ int main() {
                 node->set_color(sf::Color::White);
             }
             state.animation = false;
+            state.ready_to_run_algorithms = true;
             traversal.clear();
             current_animating_node = 0;
         }
@@ -163,6 +178,7 @@ int main() {
             if (ImGui::Button("BFS")) {
                 state.running_bfs = true;
             }
+            ImGui::InputText("##Start", &starting_vertex);
 
             if (ImGui::Button("DFS")) {
                 state.running_dfs = true;
@@ -206,7 +222,9 @@ int main() {
         ImGui::End();
         ImGui::Begin("Edges");
         for (auto& [edge_id, edge] : edges) {
-            std::string text = std::to_string(edge->get_src_id()) + "->" + std::to_string(edge->get_dst_id());
+            const std::string& src = nodes.at(edge->get_src_id())->get_text().getString();
+            const std::string& dst = nodes.at(edge->get_dst_id())->get_text().getString();
+            std::string text = src + "->" + dst;
             ImGui::Text(text.c_str());
         }
         ImGui::End();
