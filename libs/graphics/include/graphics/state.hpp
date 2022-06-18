@@ -19,8 +19,7 @@ namespace graphics {
         int current_selected = -1;
         int current_dst = -1;
         bool creation_finished = false;
-        bool running_bfs = false;
-        bool running_dfs = false;
+        bool running_algorithm = false;
         bool animation = false;
         bool ready_to_run_algorithms = false;
         std::shared_ptr<graphics::Edge> current_edge = nullptr; 

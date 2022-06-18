@@ -12,6 +12,11 @@
 #include <SFML/System.hpp>
 
 #include <algorithms/algorithm_runner.hpp>
+
+#include <algorithms/bfs.hpp>
+#include <algorithms/dfs.hpp>
+#include <algorithms/topological_sort.hpp>
+
 #include <graphics/node.hpp>
 #include <graphics/edge.hpp>
 #include <graphics/graphics_graph.hpp>
@@ -108,29 +113,11 @@ int main() {
             state.ready_to_run_algorithms = true;
         }
 
-        if (state.running_bfs) {
+        if (state.running_algorithm) {
             state.ready_to_run_algorithms = false;
             algo_runner.set_graph(graphics_graph);
-            int starting_node_id = -1;
-            for (auto& [node_id, node] : nodes) {
-                if (node->get_text().getString() == starting_vertex) {
-                    starting_node_id = node_id;
-                }
-            }
-            traversal = algo_runner.run_bfs(starting_node_id);
-            state.running_bfs = false;
-            state.animation = true;
-        } else if (state.running_dfs) {
-            algo_runner.set_graph(graphics_graph);
-            state.ready_to_run_algorithms = false;
-            int starting_node_id = -1;
-            for (auto& [node_id, node] : nodes) {
-                if (node->get_text().getString() == starting_vertex) {
-                    starting_node_id = node_id;
-                }
-            }
-            traversal = algo_runner.run_dfs(starting_node_id);
-            state.running_dfs = false;
+            traversal = algo_runner.run_algorithm();
+            state.running_algorithm = false;
             state.animation = true;
         }
 
@@ -176,12 +163,34 @@ int main() {
 
         if (state.ready_to_run_algorithms) {
             if (ImGui::Button("BFS")) {
-                state.running_bfs = true;
+                int starting_node_id = -1;
+                for (auto& [node_id, node] : nodes) {
+                    if (node->get_text().getString() == starting_vertex) {
+                        starting_node_id = node_id;
+                    }
+                }
+                std::shared_ptr<algo::Algorithm> bfs = std::make_shared<algo::BFS>(starting_node_id);
+                algo_runner.set_algorithm(bfs);
+                state.running_algorithm = true;
             }
             ImGui::InputText("##Start", &starting_vertex);
 
             if (ImGui::Button("DFS")) {
-                state.running_dfs = true;
+                int starting_node_id = -1;
+                for (auto& [node_id, node] : nodes) {
+                    if (node->get_text().getString() == starting_vertex) {
+                        starting_node_id = node_id;
+                    }
+                }
+                std::shared_ptr<algo::Algorithm> dfs = std::make_shared<algo::DFS>(starting_node_id);
+                algo_runner.set_algorithm(dfs);
+                state.running_algorithm = true;
+            }
+
+            if (ImGui::Button("Topological sort")) {
+                std::shared_ptr<algo::Algorithm> topological_sort = std::make_shared<algo::TopologicalSort>();
+                algo_runner.set_algorithm(topological_sort);
+                state.running_algorithm = true;
             }
         }
         ImGui::End();
