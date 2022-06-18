@@ -163,12 +163,7 @@ int main() {
 
         if (state.ready_to_run_algorithms) {
             if (ImGui::Button("BFS")) {
-                int starting_node_id = -1;
-                for (auto& [node_id, node] : nodes) {
-                    if (node->get_text().getString() == starting_vertex) {
-                        starting_node_id = node_id;
-                    }
-                }
+                int starting_node_id = graphics_graph.map_label_to_id(starting_vertex);
                 std::shared_ptr<algo::Algorithm> bfs = std::make_shared<algo::BFS>(starting_node_id);
                 algo_runner.set_algorithm(bfs);
                 state.running_algorithm = true;
@@ -176,12 +171,7 @@ int main() {
             ImGui::InputText("##Start", &starting_vertex);
 
             if (ImGui::Button("DFS")) {
-                int starting_node_id = -1;
-                for (auto& [node_id, node] : nodes) {
-                    if (node->get_text().getString() == starting_vertex) {
-                        starting_node_id = node_id;
-                    }
-                }
+                int starting_node_id = graphics_graph.map_label_to_id(starting_vertex);
                 std::shared_ptr<algo::Algorithm> dfs = std::make_shared<algo::DFS>(starting_node_id);
                 algo_runner.set_algorithm(dfs);
                 state.running_algorithm = true;

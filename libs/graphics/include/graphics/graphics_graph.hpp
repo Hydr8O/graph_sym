@@ -34,6 +34,7 @@ namespace graphics {
             void print_labels();
 
             int get_next_node_id() const;
+            int map_label_to_id(const std::string& label) const;
             
             bool label_exists(const std::string& label);
             bool edge_exsists(const std::shared_ptr<graphics::Edge>& new_edge);

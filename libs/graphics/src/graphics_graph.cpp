@@ -88,6 +88,16 @@ int graphics::Graph::get_next_node_id() const {
     return m_node_id;
 }
 
+int graphics::Graph::map_label_to_id(const std::string& label) const {
+    int starting_node_id = -1;
+    for (auto& [node_id, node] : m_nodes) {
+        if (node->get_text().getString() == label) {
+            starting_node_id = node_id;
+        }
+    }
+    return starting_node_id;
+}
+
 bool graphics::Graph::label_exists(const std::string& label) {
     if (m_node_labels.count(label)) {
         return true;
