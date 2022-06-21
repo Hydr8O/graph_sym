@@ -65,6 +65,10 @@ void graphics::Graph::remove_edges(int node_id) {
 
 }
 
+void graphics::Graph::remove_edge(int edge_id) {
+    m_edges.erase(edge_id);
+}
+
 void graphics::Graph::print_labels() {
     for (const std::string& label : m_node_labels) {
         std::cout << label << " ";

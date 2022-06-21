@@ -46,7 +46,6 @@ int main() {
     std::unordered_map<graphics::Mode, std::string> modes;
     modes[graphics::VertexMode] = "Vertex";
     modes[graphics::EdgeMode] = "Edge";
-    std::unordered_map<int, std::unordered_set<int>> adjacency; 
     window.setFramerateLimit(60);
     sf::Clock deltaClock;
     sf::Font font;
@@ -95,6 +94,7 @@ int main() {
                         
                     } else if (event.mouseButton.button == sf::Mouse::Right) {
                         graph_event_handler.handle_vertex_deletion(event, state, input_fields);
+                        graph_event_handler.handle_edge_deletion(event, state);
                         std::cout << "Event handled" << std::endl;
                     }
 
@@ -236,6 +236,7 @@ int main() {
 
         for (auto& [edge_id, edge] : edges) {
             window.draw(edge->get_body());
+            window.draw(edge->get_direction_shape());
         }
         
         for (auto& [node_id, node] : nodes) {
@@ -244,6 +245,7 @@ int main() {
             window.draw(node->get_body());
             window.draw(node->get_text());
         }
+
        
         ImGui::SFML::Render(window);
         window.display();

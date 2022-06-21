@@ -79,6 +79,22 @@ void graphics::GraphEventHandler::handle_vertex_deletion(const sf::Event &event,
             input_fields.erase(it);
         }
     }
+}
+
+void graphics::GraphEventHandler::handle_edge_deletion(const sf::Event &event, graphics::State &state) {
+    float x = event.mouseButton.x;
+    float y = event.mouseButton.y;
+    const EdgeArray& edges = m_graph.get_edges();
+    int edge_for_removal_id = -1;
+    for (const auto& [edge_id, edge] : edges) {
+        if (edge->clicked(x, y)) {
+            edge_for_removal_id = edge_id;
+        }
+    }
+
+    if (edge_for_removal_id != -1) {
+        m_graph.remove_edge(edge_for_removal_id);
+    }
 
 }
 

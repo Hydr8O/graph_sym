@@ -31,6 +31,7 @@ namespace graphics {
             void remove_label(std::string label);
             void remove_node(int node_id);
             void remove_edges(int node_id);
+            void remove_edge(int edge_id);
             void print_labels();
 
             int get_next_node_id() const;
