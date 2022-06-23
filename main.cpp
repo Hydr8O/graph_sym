@@ -36,7 +36,7 @@ int main() {
     float duration = 0.f;
     graphics::State state;
     sf::Color animation_color;
-    std::vector<int> traversal;
+    std::vector<std::shared_ptr<Node>> traversal;
     int red = 255, green = 255;
     graphics::Graph graphics_graph;
     std::string starting_vertex = "1";
@@ -52,6 +52,7 @@ int main() {
     
     font.loadFromFile("../fonts/railway/railway.otf");
     std::unordered_map<int, std::string> input_fields;
+    std::unordered_map<int, float> weight_input_fields;
 
     graphics::Edge edge;
     
@@ -85,7 +86,7 @@ int main() {
                         }
 
                         if (state.edge_connection()) {
-                            graph_event_handler.handle_edge_connection(event, state);
+                            graph_event_handler.handle_edge_connection(event, state, weight_input_fields);
                         }
 
                         if (state.vertex_creation()) {
@@ -97,8 +98,6 @@ int main() {
                         graph_event_handler.handle_edge_deletion(event, state);
                         std::cout << "Event handled" << std::endl;
                     }
-
-
             }
         }
 
@@ -123,13 +122,31 @@ int main() {
 
 
         if (state.animation && duration > 0.01f && !traversal.empty()) {
+            int src_node = current_animating_node;
+            std::shared_ptr<graphics::Edge> current_animating_edge = nullptr;
+            int dst_node = -1;
+            if (current_animating_node + 1 < traversal.size()) {
+                dst_node = current_animating_node + 1;
+            }
             red -= 5;
             green -= 5;
             if (red > 0 && green > 0) {
                 duration = 0;
                 animation_color = sf::Color(red, green, 255, 255);
-                const std::shared_ptr<Node>& node = nodes.at(traversal[current_animating_node]);
+                const std::shared_ptr<Node>& node = traversal[current_animating_node];
+                if (dst_node != -1) {
+                    for (auto& [edge_id, edge] : edges) {
+                        if (edge->get_src_id() == src_node && edge->get_dst_id() == dst_node) {
+                            current_animating_edge = edge;
+                            break;
+                        }
+                    }
+                }
                 node->set_color(animation_color);
+                if (current_animating_edge != nullptr) {
+                    current_animating_edge->set_color(animation_color);
+                }
+
             } else {
                 red = 255;
                 green = 255;
@@ -139,8 +156,7 @@ int main() {
 
         if (state.animation && current_animating_node >= traversal.size()) {
             std::shared_ptr<Node> node;
-            for (int node_id : traversal) {
-                node = nodes.at(node_id);
+            for (const auto& node : traversal) {
                 node->set_color(sf::Color::White);
             }
             state.animation = false;
@@ -225,6 +241,8 @@ int main() {
             const std::string& dst = nodes.at(edge->get_dst_id())->get_text().getString();
             std::string text = src + "->" + dst;
             ImGui::Text(text.c_str());
+            float* edge_weight_input = &weight_input_fields[edge_id];
+            ImGui::InputFloat("##edge_id", edge_weight_input);
         }
         ImGui::End();
 
@@ -235,6 +253,7 @@ int main() {
         }
 
         for (auto& [edge_id, edge] : edges) {
+            edge->set_weight(weight_input_fields[edge_id]);
             window.draw(edge->get_body());
             window.draw(edge->get_direction_shape());
         }

@@ -11,6 +11,10 @@ void graphics::Edge::set_id(int id) {
     m_id = id;
 }
 
+void graphics::Edge::set_weight(float weight) {
+    m_weight = weight;
+}
+
 void graphics::Edge::set_src_id(int src_id) {
     m_src_id = src_id;
 }
@@ -38,6 +42,11 @@ void graphics::Edge::set_dst_position(sf::Vector2f dst_position) {
     
 }
 
+void graphics::Edge::set_color(const sf::Color& color) {
+    m_body[0].color = color;
+    m_body[1].color = color;
+}
+
 const sf::VertexArray &graphics::Edge::get_body() const {
     return m_body;
 }
@@ -63,6 +72,10 @@ bool graphics::Edge::clicked(float x, float y) {
 
 int graphics::Edge::get_src_id() {
     return m_src_id;
+}
+
+int graphics::Edge::get_id() {
+    return m_id;
 }
 
 int graphics::Edge::get_dst_id() {

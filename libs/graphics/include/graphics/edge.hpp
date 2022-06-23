@@ -11,6 +11,7 @@ namespace graphics {
         int m_id;
         int m_src_id;
         int m_dst_id;
+        float m_weight;
         sf::CircleShape m_direction_shape;
     public:
         Edge();
@@ -18,12 +19,15 @@ namespace graphics {
         void set_dst_position(sf::Vector2f dst_position);
         void set_src_id(int src_id);
         void set_dst_id(int dst_id);
+        void set_weight(float weight);
+        void set_color(const sf::Color& color);
         void set_id(int id);
         bool clicked(float x, float y);
         void reset_position();
         const sf::VertexArray& get_body() const;
         const sf::CircleShape& get_direction_shape() const;
 
+        int get_id();
         int get_src_id();
         int get_dst_id();
     };

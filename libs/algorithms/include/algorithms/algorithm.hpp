@@ -7,7 +7,7 @@ namespace algo {
     class Algorithm {
     public:
     virtual ~Algorithm(){};
-        virtual std::vector<int> run(const graphics::Graph& graph) = 0;
+        virtual std::vector<std::shared_ptr<Node>> run(const graphics::Graph& graph) = 0;
     };
 }
 

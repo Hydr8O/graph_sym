@@ -6,6 +6,7 @@ set(
     src/bfs.cpp
     src/dfs.cpp
     src/topological_sort.cpp
+    src/djikstra.cpp
 )
 
 add_library(algorithms ${SOURCES})

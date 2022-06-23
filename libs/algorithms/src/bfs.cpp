@@ -6,7 +6,7 @@ algo::BFS::BFS(int src) {
     m_src = src;
 }
 
-std::vector<int> algo::BFS::run(const graphics::Graph& graph) {
+std::vector<std::shared_ptr<Node>> algo::BFS::run(const graphics::Graph& graph) {
     if (!graph.get_paths().count(m_src)) {
         return {};
     }
@@ -21,7 +21,7 @@ std::vector<int> algo::BFS::run(const graphics::Graph& graph) {
         const int current = q.front();
         q.pop();
         m_visited.insert(current);
-        m_traversal.push_back(current);
+        m_traversal.push_back(graph.get_nodes().at(current));
 
         for (auto& dst : adjacency.at(current)) {
             if (!m_visited.count(dst)) {

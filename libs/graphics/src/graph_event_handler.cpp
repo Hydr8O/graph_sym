@@ -33,7 +33,7 @@ void graphics::GraphEventHandler::handle_dst_vertex_selection(const sf::Event& e
     }
 }
 
-void graphics::GraphEventHandler::handle_edge_connection(const sf::Event &event, graphics::State &state) {
+void graphics::GraphEventHandler::handle_edge_connection(const sf::Event &event, graphics::State &state, std::unordered_map<int, float>& weight_input_fields) {
     const NodeArray& nodes = m_graph.get_nodes();
     const EdgeArray& edges = m_graph.get_edges();
     int dst_node_id = state.current_dst;
@@ -42,6 +42,7 @@ void graphics::GraphEventHandler::handle_edge_connection(const sf::Event &event,
     state.current_edge->set_dst_position(node_position);
     state.current_edge->set_dst_id(dst_node->get_id());
     m_graph.add_edge(state.current_edge);
+    weight_input_fields[state.current_edge->get_id()] = 0.f;
     state.current_edge = nullptr;
     state.current_dst = -1;
 }

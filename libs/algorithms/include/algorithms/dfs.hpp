@@ -11,12 +11,12 @@ namespace algo {
     private:
         int m_src;
         std::unordered_set<int> m_visited;
-        std::vector<int> m_traversal;
+        std::vector<std::shared_ptr<Node>> m_traversal;
         void dfs_helper(const graphics::Graph& graph, int src);
 
     public:
         DFS(int src);
-        std::vector<int> run(const graphics::Graph& graph) override;
+        std::vector<std::shared_ptr<Node>> run(const graphics::Graph& graph) override;
     };
 
 }

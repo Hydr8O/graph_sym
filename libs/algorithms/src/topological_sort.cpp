@@ -2,7 +2,7 @@
 
 
 
-std::vector<int> algo::TopologicalSort::run(const graphics::Graph& graph) {
+std::vector<std::shared_ptr<Node>> algo::TopologicalSort::run(const graphics::Graph& graph) {
     m_traversal.clear();
     m_visited.clear();
     m_cycle.clear();
@@ -31,6 +31,6 @@ bool algo::TopologicalSort::dfs_helper(const graphics::Graph& graph, int src) {
     }
     m_cycle.erase(src);
     m_visited.insert(src);
-    m_traversal.push_back(src);
+    m_traversal.push_back(graph.get_nodes().at(src));
     return true;
 }
