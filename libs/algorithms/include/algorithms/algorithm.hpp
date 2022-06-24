@@ -2,12 +2,13 @@
 #define ALGORITHM_HPP_
 #include <vector>
 #include <graphics/graphics_graph.hpp>
+#include <algorithms/traversal.hpp>
 
 namespace algo {
     class Algorithm {
     public:
     virtual ~Algorithm(){};
-        virtual std::vector<std::shared_ptr<Node>> run(const graphics::Graph& graph) = 0;
+    virtual Traversal run(const graphics::Graph& graph) = 0;
     };
 }
 

@@ -15,7 +15,7 @@ namespace algo {
 
     public:
         Djikstra(int src);
-        std::vector<std::shared_ptr<Node>> run(const graphics::Graph& graph) override;
+        Traversal run(const graphics::Graph& graph) override;
     };
 }
 

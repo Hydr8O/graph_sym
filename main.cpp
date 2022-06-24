@@ -36,7 +36,7 @@ int main() {
     float duration = 0.f;
     graphics::State state;
     sf::Color animation_color;
-    std::vector<std::shared_ptr<Node>> traversal;
+    algo::Traversal traversal;
     int red = 255, green = 255;
     graphics::Graph graphics_graph;
     std::string starting_vertex = "1";
@@ -96,7 +96,6 @@ int main() {
                     } else if (event.mouseButton.button == sf::Mouse::Right) {
                         graph_event_handler.handle_vertex_deletion(event, state, input_fields);
                         graph_event_handler.handle_edge_deletion(event, state);
-                        std::cout << "Event handled" << std::endl;
                     }
             }
         }
@@ -121,30 +120,21 @@ int main() {
         }
 
 
-        if (state.animation && duration > 0.01f && !traversal.empty()) {
-            int src_node = current_animating_node;
-            std::shared_ptr<graphics::Edge> current_animating_edge = nullptr;
-            int dst_node = -1;
-            if (current_animating_node + 1 < traversal.size()) {
-                dst_node = current_animating_node + 1;
-            }
+        if (state.animation && duration > 0.01f && !traversal.node_traversal.empty()) {
             red -= 5;
             green -= 5;
             if (red > 0 && green > 0) {
                 duration = 0;
                 animation_color = sf::Color(red, green, 255, 255);
-                const std::shared_ptr<Node>& node = traversal[current_animating_node];
-                if (dst_node != -1) {
-                    for (auto& [edge_id, edge] : edges) {
-                        if (edge->get_src_id() == src_node && edge->get_dst_id() == dst_node) {
-                            current_animating_edge = edge;
-                            break;
-                        }
-                    }
-                }
+                const std::shared_ptr<Node>& node = traversal.node_traversal[current_animating_node];
+                std::shared_ptr<graphics::Edge> edge = nullptr;
+                if (current_animating_node < traversal.edge_traversal.size()) {
+                    edge = traversal.edge_traversal[current_animating_node];
+                };
+               
                 node->set_color(animation_color);
-                if (current_animating_edge != nullptr) {
-                    current_animating_edge->set_color(animation_color);
+                if (edge != nullptr) {
+                    edge->set_color(animation_color);
                 }
 
             } else {
@@ -154,14 +144,20 @@ int main() {
             }
         }
 
-        if (state.animation && current_animating_node >= traversal.size()) {
+        if (state.animation && current_animating_node >= traversal.node_traversal.size()) {
             std::shared_ptr<Node> node;
-            for (const auto& node : traversal) {
+            for (const auto& node : traversal.node_traversal) {
                 node->set_color(sf::Color::White);
             }
+
+            for (const auto& edge : traversal.edge_traversal) {
+                edge->set_color(sf::Color::White);
+            }
+
             state.animation = false;
             state.ready_to_run_algorithms = true;
-            traversal.clear();
+            traversal.node_traversal.clear();
+            traversal.edge_traversal.clear();
             current_animating_node = 0;
         }
         

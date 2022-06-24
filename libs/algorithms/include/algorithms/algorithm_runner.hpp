@@ -23,7 +23,7 @@ namespace algo {
         AlgorithmRunner();
         void set_graph(const graphics::Graph& graphics_graph);
         void set_algorithm(std::shared_ptr<Algorithm>& algorithm);
-        std::vector<std::shared_ptr<Node>> run_algorithm();
+        Traversal run_algorithm();
     };
 }
 

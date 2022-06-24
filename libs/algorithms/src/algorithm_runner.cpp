@@ -16,6 +16,6 @@ void algo::AlgorithmRunner::set_algorithm(std::shared_ptr<algo::Algorithm> &algo
     m_algorithm = algorithm;
 }
 
-std::vector<std::shared_ptr<Node>> algo::AlgorithmRunner::run_algorithm() {
+algo::Traversal algo::AlgorithmRunner::run_algorithm() {
     return m_algorithm->run(m_graph);
 }
