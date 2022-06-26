@@ -16,6 +16,7 @@
 #include <algorithms/bfs.hpp>
 #include <algorithms/dfs.hpp>
 #include <algorithms/topological_sort.hpp>
+#include <algorithms/djikstra.hpp>
 
 #include <graphics/node.hpp>
 #include <graphics/edge.hpp>
@@ -37,6 +38,7 @@ int main() {
     graphics::State state;
     sf::Color animation_color;
     algo::Traversal traversal;
+    algo::Traversal initial_traversal;
     int red = 255, green = 255;
     graphics::Graph graphics_graph;
     std::string starting_vertex = "1";
@@ -106,6 +108,7 @@ int main() {
 
         if (state.creation_finished) {
             graphics_graph.create_adjacency_list();
+            graphics_graph.create_weighted_adjacency_list();
             
             state.creation_finished = false;
             state.ready_to_run_algorithms = true;
@@ -115,6 +118,10 @@ int main() {
             state.ready_to_run_algorithms = false;
             algo_runner.set_graph(graphics_graph);
             traversal = algo_runner.run_algorithm();
+            initial_traversal.distances = traversal.distances;
+            for (auto& [node_id, dist] : initial_traversal.distances) {
+                dist = MAXFLOAT;
+            }
             state.running_algorithm = false;
             state.animation = true;
         }
@@ -136,8 +143,10 @@ int main() {
                 if (edge != nullptr) {
                     edge->set_color(animation_color);
                 }
-
             } else {
+                int current_animating_node_id = traversal.node_traversal[current_animating_node]->get_id();
+                initial_traversal.distances[current_animating_node_id] = traversal.distances[current_animating_node_id];
+                std::cout << traversal.distances[current_animating_node] << std::endl;
                 red = 255;
                 green = 255;
                 current_animating_node++;
@@ -194,6 +203,13 @@ int main() {
                 algo_runner.set_algorithm(topological_sort);
                 state.running_algorithm = true;
             }
+
+            if (ImGui::Button("Djikstra")) {
+                int starting_node_id = graphics_graph.map_label_to_id(starting_vertex);
+                std::shared_ptr<algo::Algorithm> djikstra = std::make_shared<algo::Djikstra>(starting_node_id);
+                algo_runner.set_algorithm(djikstra);
+                state.running_algorithm = true;
+            }
         }
         ImGui::End();
 
@@ -235,10 +251,11 @@ int main() {
         for (auto& [edge_id, edge] : edges) {
             const std::string& src = nodes.at(edge->get_src_id())->get_text().getString();
             const std::string& dst = nodes.at(edge->get_dst_id())->get_text().getString();
+            const std::string& label = "##" + std::to_string(edge_id);
             std::string text = src + "->" + dst;
             ImGui::Text(text.c_str());
-            float* edge_weight_input = &weight_input_fields[edge_id];
-            ImGui::InputFloat("##edge_id", edge_weight_input);
+            float* edge_weight_input = &weight_input_fields.at(edge_id);
+            ImGui::InputFloat(label.c_str(), edge_weight_input);
         }
         ImGui::End();
 
@@ -253,12 +270,27 @@ int main() {
             window.draw(edge->get_body());
             window.draw(edge->get_direction_shape());
         }
+ 
         
         for (auto& [node_id, node] : nodes) {
             node->set_text(input_fields[node_id], font);
             
             window.draw(node->get_body());
             window.draw(node->get_text());
+        }
+
+        for (auto& [node_id, distance] : initial_traversal.distances) {
+            sf::Text distance_text;
+            std::string text = std::to_string(distance).substr(0, 4);
+            if (std::abs(distance - MAXFLOAT) < std::numeric_limits<float>::epsilon()) {
+                std::cout << "INF" << std::endl;
+                text = "inf";
+            }
+            distance_text.setString(text);
+            distance_text.setColor(sf::Color::Green);
+            distance_text.setFont(font);
+            distance_text.setPosition(graphics_graph.get_nodes().at(node_id)->get_body().getPosition());
+            window.draw(distance_text);
         }
 
        

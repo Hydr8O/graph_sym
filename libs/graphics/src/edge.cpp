@@ -81,3 +81,7 @@ int graphics::Edge::get_id() {
 int graphics::Edge::get_dst_id() {
     return m_dst_id;
 }
+
+float graphics::Edge::get_weight() {
+    return m_weight;
+}

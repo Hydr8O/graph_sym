@@ -16,10 +16,27 @@ void graphics::Graph::create_adjacency_list() {
     }
 }
 
+void graphics::Graph::create_weighted_adjacency_list() {
+    m_weighted_adjacency_list.clear();
+    for (auto& [edge_id, edge] : m_edges) {
+        int src_id = edge->get_src_id();
+        int dst_id = edge->get_dst_id();
+        float weight = edge->get_weight();
+        add_weighted_path(src_id, dst_id, weight);
+    }
+}
+
 void graphics::Graph::add_path(int src, int dst) {
     m_adjacency_list[src].push_back(dst);
     if (!m_adjacency_list.count(dst)) {
         m_adjacency_list[dst] = {};
+    }
+}
+
+void graphics::Graph::add_weighted_path(int src, int dst, float weight) {
+    m_weighted_adjacency_list[src].push_back({weight, dst});
+    if (!m_weighted_adjacency_list.count(dst)) {
+        m_weighted_adjacency_list[dst] = {};
     }
 }
 
@@ -86,6 +103,10 @@ const EdgeArray &graphics::Graph::get_edges() const {
 
 const AdjacencyList &graphics::Graph::get_paths() const {
     return m_adjacency_list;
+}
+
+const WeightedAdjacencyList &graphics::Graph::get_weighted_paths() const {
+    return m_weighted_adjacency_list;
 }
 
 int graphics::Graph::get_next_node_id() const {

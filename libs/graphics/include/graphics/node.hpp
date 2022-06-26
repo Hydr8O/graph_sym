@@ -9,6 +9,7 @@ private:
     sf::Text m_text;
     sf::CircleShape m_body;
     int m_id;
+    float m_shortest_path;
 
 public:
     Node();

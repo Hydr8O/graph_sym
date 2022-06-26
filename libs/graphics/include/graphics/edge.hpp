@@ -30,6 +30,7 @@ namespace graphics {
         int get_id();
         int get_src_id();
         int get_dst_id();
+        float get_weight();
     };
 }
 

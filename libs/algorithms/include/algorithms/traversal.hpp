@@ -10,6 +10,7 @@ namespace algo {
     struct Traversal {
         std::vector<std::shared_ptr<Node>> node_traversal;
         std::vector<std::shared_ptr<graphics::Edge>> edge_traversal;
+        std::unordered_map<int, float> distances;
     };
 }
 
