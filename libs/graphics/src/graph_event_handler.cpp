@@ -47,15 +47,16 @@ void graphics::GraphEventHandler::handle_edge_connection(const sf::Event &event,
     state.current_dst = -1;
 }
 
-void graphics::GraphEventHandler::handle_vertex_creation(const sf::Event &event, graphics::State &state, const sf::Font& font, std::unordered_map<int, std::string>& input_fields) {
+void graphics::GraphEventHandler::handle_vertex_creation(const sf::Event &event, graphics::State &state, std::unordered_map<int, std::string>& input_fields) {
     float x = event.mouseButton.x;
     float y = event.mouseButton.y;
     std::shared_ptr<Node> node = std::make_shared<Node>();    
     node->set_body(30.f);
-    node->set_position(x, y);
+    node->init_text_style();
     m_graph.add_node(node);
     int node_id = node->get_id();
-    node->set_text(std::to_string(node_id), font);
+    node->set_text(std::to_string(node_id), m_graph.get_font());
+    node->set_position(x, y);
     input_fields[node_id] = std::to_string(node_id);
 }
 

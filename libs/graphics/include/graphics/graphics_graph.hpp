@@ -23,6 +23,7 @@ namespace graphics {
             int m_node_id = 0;
             int m_edge_id = 0;
             std::unordered_set<std::string> m_node_labels;
+            sf::Font m_font;
 
         public:
             void add_node(std::shared_ptr<Node> node);
@@ -37,6 +38,7 @@ namespace graphics {
             void remove_edges(int node_id);
             void remove_edge(int edge_id);
             void print_labels();
+            void set_font(const sf::Font& font);
 
             int get_next_node_id() const;
             int map_label_to_id(const std::string& label) const;
@@ -48,6 +50,7 @@ namespace graphics {
             const EdgeArray& get_edges() const;
             const AdjacencyList& get_paths() const;
             const WeightedAdjacencyList& get_weighted_paths() const;
+            const sf::Font& get_font() const;
 
     };
 }

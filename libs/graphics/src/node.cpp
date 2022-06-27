@@ -1,5 +1,6 @@
 #include <graphics/node.hpp>
 #include <cmath>
+#include <iostream>
 
 Node::Node() {
 
@@ -9,15 +10,21 @@ Node::~Node() {
 
 }
 
-void Node::set_text(const std::string& text, const sf::Font& font) {
-    m_text.setFont(font);
-    m_text.setString(text);
-    m_text.setCharacterSize(35);
-    m_text.setFillColor(sf::Color::Red);
-    sf::FloatRect text_rect = m_text.getGlobalBounds();
+void Node::init_position_origin(const std::string& text, const sf::Font& font, sf::Text& text_elem) {
+    text_elem.setFont(font);
+    text_elem.setString(text);
+    sf::FloatRect text_rect = text_elem.getGlobalBounds();
     sf::Vector2f center = {text_rect.width / 2.f, text_rect.height / 2.f};
-    sf::Vector2f local_bounds_position = {m_text.getLocalBounds().left, m_text.getLocalBounds().top};
-    m_text.setOrigin(center + local_bounds_position);
+    sf::Vector2f local_bounds_position = {text_elem.getLocalBounds().left, text_elem.getLocalBounds().top};
+    text_elem.setOrigin(center + local_bounds_position);
+}
+
+void Node::set_text(const std::string& text, const sf::Font& font) {
+    init_position_origin(text, font, m_text);
+}
+
+void Node::set_distance(const std::string &distance, const sf::Font &font) {
+    init_position_origin(distance, font, m_distance);
 }
 
 void Node::set_body(float radius) {
@@ -36,10 +43,25 @@ void Node::set_color(sf::Color color) {
 void Node::set_position(float x, float y) {
     m_body.setPosition(x, y);
     m_text.setPosition(x, y);
+    sf::FloatRect text_rect = m_text.getGlobalBounds();
+    float offset = text_rect.height + m_body.getRadius();
+    std::cout << text_rect.height << std::endl;
+    m_distance.setPosition(x, y - offset);
+}
+
+void Node::init_text_style() {
+    m_text.setCharacterSize(35);
+    m_text.setFillColor(sf::Color::Red);
+    m_distance.setCharacterSize(30);
+    m_distance.setFillColor(sf::Color::Green);
 }
 
 sf::Text Node::get_text() const {
     return m_text;
+}
+
+sf::Text Node::get_distance_text() const {
+    return m_distance;
 }
 
 sf::CircleShape Node::get_body() const {

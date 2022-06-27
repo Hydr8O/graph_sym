@@ -19,7 +19,7 @@ namespace graphics {
         : m_graph(graph) {
 
         };
-        void handle_vertex_creation(const sf::Event& event, graphics::State& state, const sf::Font& font, std::unordered_map<int, std::string>& input_fields);
+        void handle_vertex_creation(const sf::Event& event, graphics::State& state, std::unordered_map<int, std::string>& input_fields);
         void handle_src_vertex_selection(const sf::Event& event, graphics::State& state);
         void handle_dst_vertex_selection(const sf::Event& event, graphics::State& state);
         void handle_vertex_deletion(const sf::Event& event, graphics::State& state, std::unordered_map<int, std::string>& input_fields);

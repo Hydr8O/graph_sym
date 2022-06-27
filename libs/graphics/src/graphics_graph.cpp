@@ -26,6 +26,14 @@ void graphics::Graph::create_weighted_adjacency_list() {
     }
 }
 
+const sf::Font &graphics::Graph::get_font() const {
+    return m_font;
+}
+
+void graphics::Graph::set_font(const sf::Font& font) {
+    m_font = font;
+}
+
 void graphics::Graph::add_path(int src, int dst) {
     m_adjacency_list[src].push_back(dst);
     if (!m_adjacency_list.count(dst)) {

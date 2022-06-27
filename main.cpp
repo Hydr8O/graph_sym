@@ -55,6 +55,7 @@ int main() {
     font.loadFromFile("../fonts/railway/railway.otf");
     std::unordered_map<int, std::string> input_fields;
     std::unordered_map<int, float> weight_input_fields;
+    graphics_graph.set_font(font);
 
     graphics::Edge edge;
     
@@ -92,7 +93,7 @@ int main() {
                         }
 
                         if (state.vertex_creation()) {
-                            graph_event_handler.handle_vertex_creation(event, state, font, input_fields);
+                            graph_event_handler.handle_vertex_creation(event, state, input_fields);
                         }
                         
                     } else if (event.mouseButton.button == sf::Mouse::Right) {
@@ -167,6 +168,8 @@ int main() {
             state.ready_to_run_algorithms = true;
             traversal.node_traversal.clear();
             traversal.edge_traversal.clear();
+            traversal.distances.clear();
+            initial_traversal.distances.clear();
             current_animating_node = 0;
         }
         
@@ -280,17 +283,12 @@ int main() {
         }
 
         for (auto& [node_id, distance] : initial_traversal.distances) {
-            sf::Text distance_text;
             std::string text = std::to_string(distance).substr(0, 4);
             if (std::abs(distance - MAXFLOAT) < std::numeric_limits<float>::epsilon()) {
-                std::cout << "INF" << std::endl;
                 text = "inf";
             }
-            distance_text.setString(text);
-            distance_text.setColor(sf::Color::Green);
-            distance_text.setFont(font);
-            distance_text.setPosition(graphics_graph.get_nodes().at(node_id)->get_body().getPosition());
-            window.draw(distance_text);
+            nodes.at(node_id)->set_distance(text, font);
+            window.draw(nodes.at(node_id)->get_distance_text());
         }
 
        
