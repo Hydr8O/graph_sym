@@ -7,6 +7,7 @@ set(
     src/dfs.cpp
     src/topological_sort.cpp
     src/djikstra.cpp
+    src/union_find.cpp
 )
 
 add_library(algorithms ${SOURCES})

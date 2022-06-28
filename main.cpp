@@ -17,6 +17,7 @@
 #include <algorithms/dfs.hpp>
 #include <algorithms/topological_sort.hpp>
 #include <algorithms/djikstra.hpp>
+#include <algorithms/union_find.hpp>
 
 #include <graphics/node.hpp>
 #include <graphics/edge.hpp>
@@ -128,13 +129,13 @@ int main() {
         }
 
 
-        if (state.animation && duration > 0.01f && !traversal.node_traversal.empty()) {
+        if (state.animation && duration > 0.01f && (!traversal.node_traversal.empty())) {
             red -= 5;
             green -= 5;
             if (red > 0 && green > 0) {
                 duration = 0;
                 animation_color = sf::Color(red, green, 255, 255);
-                const std::shared_ptr<Node>& node = traversal.node_traversal[current_animating_node];
+                const std::shared_ptr<Node>& node = traversal.node_traversal.at(current_animating_node);
                 std::shared_ptr<graphics::Edge> edge = nullptr;
                 if (current_animating_node < traversal.edge_traversal.size()) {
                     edge = traversal.edge_traversal[current_animating_node];
@@ -211,6 +212,12 @@ int main() {
                 int starting_node_id = graphics_graph.map_label_to_id(starting_vertex);
                 std::shared_ptr<algo::Algorithm> djikstra = std::make_shared<algo::Djikstra>(starting_node_id);
                 algo_runner.set_algorithm(djikstra);
+                state.running_algorithm = true;
+            }
+
+            if (ImGui::Button("Union-find")) {
+                std::shared_ptr<algo::Algorithm> union_find = std::make_shared<algo::UnionFind>();
+                algo_runner.set_algorithm(union_find);
                 state.running_algorithm = true;
             }
         }
