@@ -9,6 +9,8 @@
 #include <graphics/state.hpp>
 #include <graphics/edge.hpp>
 
+#include <algorithms/traversal.hpp>
+
 namespace graphics {
     class GraphEventHandler {
     private:
@@ -26,6 +28,9 @@ namespace graphics {
         void handle_edge_deletion(const sf::Event& event, graphics::State& state);
         void handle_edge_connection(const sf::Event& event, graphics::State& state, std::unordered_map<int, float>& weight_input_fields);
         void handle_edge_creation(const sf::Event& event, graphics::State& state, const sf::RenderWindow& window);
+        void handle_graph_creation_finish(const sf::Event& event, graphics::State& state);
+        void handle_animation_step(const sf::Event& event, graphics::AnimationState& state, algo::Traversal& traversal, algo::Traversal& initial_traversal);
+        void handle_animation_finish(graphics::AnimationState& state, algo::Traversal& traversal, algo::Traversal& initial_traversal);
 
     };
 }

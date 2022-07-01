@@ -47,6 +47,57 @@ void graphics::GraphEventHandler::handle_edge_connection(const sf::Event &event,
     state.current_dst = -1;
 }
 
+void graphics::GraphEventHandler::handle_graph_creation_finish(const sf::Event &event, graphics::State &state) {
+    m_graph.create_adjacency_list();
+    m_graph.create_weighted_adjacency_list();
+    
+    state.creation_finished = false;
+    state.ready_to_run_algorithms = true;
+}
+
+void graphics::GraphEventHandler::handle_animation_step(const sf::Event &event, graphics::AnimationState &state, algo::Traversal& traversal, algo::Traversal& initial_traversal) {
+    state.red -= 5;
+    state.green -= 5;
+    if (state.red > 0 && state.green > 0) {
+        state.duration = 0;
+        state.animation_color = sf::Color(state.red, state.green, 255, 255);
+        const std::shared_ptr<Node>& node = traversal.node_traversal.at(state.current_animating_node);
+        std::shared_ptr<graphics::Edge> edge = nullptr;
+        if (state.current_animating_node < traversal.edge_traversal.size()) {
+            edge = traversal.edge_traversal[state.current_animating_node];
+        };
+        
+        node->set_color(state.animation_color);
+        if (edge != nullptr) {
+            edge->set_color(state.animation_color);
+        }
+    } else {
+        int current_animating_node_id = traversal.node_traversal[state.current_animating_node]->get_id();
+        initial_traversal.distances[current_animating_node_id] = traversal.distances[current_animating_node_id];
+        state.red = 255;
+        state.green = 255;
+        state.current_animating_node++;
+    }
+}
+
+void graphics::GraphEventHandler::handle_animation_finish(graphics::AnimationState &state, algo::Traversal &traversal, algo::Traversal &initial_traversal) {
+    std::shared_ptr<Node> node;
+    for (const auto& node : traversal.node_traversal) {
+        node->set_color(sf::Color::White);
+    }
+
+    for (const auto& edge : traversal.edge_traversal) {
+        edge->set_color(sf::Color::White);
+    }
+
+    state.animation = false;
+    traversal.node_traversal.clear();
+    traversal.edge_traversal.clear();
+    traversal.distances.clear();
+    initial_traversal.distances.clear();
+    state.current_animating_node = 0;
+}
+
 void graphics::GraphEventHandler::handle_vertex_creation(const sf::Event &event, graphics::State &state, std::unordered_map<int, std::string>& input_fields) {
     float x = event.mouseButton.x;
     float y = event.mouseButton.y;

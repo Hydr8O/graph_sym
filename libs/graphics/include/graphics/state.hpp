@@ -11,16 +11,29 @@ namespace graphics {
         VertexMode, EdgeMode
     };
 
+    struct AnimationState {
+        int current_animating_node = 0;
+        bool animation = false;
+        int red = 255, green = 255;
+        sf::Color animation_color;
+        float duration;
+    };
+
+    struct AlgorithmState {
+        std::string starting_vertex = "1";
+    };
+
     class State {
     private:
         
     public:
+        AnimationState animation_state;
+        AlgorithmState algorithm_state;
         Mode current_mode = VertexMode;
         int current_selected = -1;
         int current_dst = -1;
         bool creation_finished = false;
         bool running_algorithm = false;
-        bool animation = false;
         bool ready_to_run_algorithms = false;
         std::shared_ptr<graphics::Edge> current_edge = nullptr; 
         bool src_vertex_selection();

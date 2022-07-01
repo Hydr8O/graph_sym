@@ -12,4 +12,4 @@ set(
 
 add_library(graphics STATIC ${SOURCES})
 
-target_include_directories(graphics PUBLIC include)
+target_include_directories(graphics PUBLIC include ../algorithms/include)

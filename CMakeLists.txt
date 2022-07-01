@@ -13,10 +13,11 @@ set(
     build_imgui-sfml/lib/cmake/ImGui-SFML
 )
 find_package(ImGui-SFML REQUIRED)
-add_executable(graph_sym main.cpp)
+add_executable(graph_sym main.cpp src/application.cpp)
 target_include_directories(
     graph_sym 
     PUBLIC 
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${CMAKE_CURRENT_SOURCE_DIR}/libs/algorithms/include
     ${CMAKE_CURRENT_SOURCE_DIR}/libs/graphics/include
     ${CMAKE_CURRENT_SOURCE_DIR}/libs/imgui_widgets/include
