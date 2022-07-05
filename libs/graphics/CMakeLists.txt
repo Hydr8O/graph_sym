@@ -7,6 +7,7 @@ set(
     src/state.cpp
     src/graph_event_handler.cpp
     src/edge.cpp
+    src/modes.cpp
 )
 
 

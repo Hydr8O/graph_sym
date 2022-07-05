@@ -13,9 +13,6 @@ Application::Application(int width, int height, std::string window_name)
 void Application::run() {
     algo::Traversal traversal;
     algo::Traversal initial_traversal;
-    std::unordered_map<graphics::Mode, std::string> modes;
-    modes[graphics::VertexMode] = "Vertex";
-    modes[graphics::EdgeMode] = "Edge";
 
     while (m_window.isOpen()) {
         sf::Time dt = m_clock.restart();
@@ -26,7 +23,7 @@ void Application::run() {
             
         ImGui::SFML::Update(m_window, m_clock.restart());
         
-        handle_imgui_events(modes);
+        handle_imgui_events();
 
         m_window.clear();
         handle_sfml_drawing(initial_traversal);
@@ -143,7 +140,7 @@ void Application::handle_algorithm_buttons() {
     }
 }
 
-void Application::handle_imgui_events(std::unordered_map<graphics::Mode, std::string>& modes) {
+void Application::handle_imgui_events() {
     std::unordered_set<std::string> input_values;
     const NodeArray& nodes = m_graphics_graph.get_nodes();
     const EdgeArray& edges = m_graphics_graph.get_edges();
@@ -158,7 +155,7 @@ void Application::handle_imgui_events(std::unordered_map<graphics::Mode, std::st
     ImGui::End();
 
     ImGui::Begin("Mode");
-    std::string mode_text = "Current Mode: " + modes[m_state.current_mode];
+    std::string mode_text = "Current Mode: " + m_modes.modes[m_state.current_mode];
     ImGui::Text(mode_text.c_str());
     if (ImGui::Button("Edge Mode")) {
         m_state.set_edge_mode();

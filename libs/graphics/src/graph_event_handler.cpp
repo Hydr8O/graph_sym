@@ -67,13 +67,23 @@ void graphics::GraphEventHandler::handle_animation_step(const sf::Event &event, 
             edge = traversal.edge_traversal[state.current_animating_node];
         };
         
-        node->set_color(state.animation_color);
+        if (node != nullptr) {
+            node->set_color(state.animation_color);
+        } else {
+            state.animation_color = sf::Color::Red;
+            // handle_animation_finish(state, traversal, initial_traversal);
+        }
+
         if (edge != nullptr) {
+            std::cout << edge->get_id() << std::endl;
             edge->set_color(state.animation_color);
         }
     } else {
-        int current_animating_node_id = traversal.node_traversal[state.current_animating_node]->get_id();
-        initial_traversal.distances[current_animating_node_id] = traversal.distances[current_animating_node_id];
+        const std::shared_ptr<Node>& node = traversal.node_traversal.at(state.current_animating_node);
+        if (node != nullptr) {
+            int current_animating_node_id = traversal.node_traversal[state.current_animating_node]->get_id();
+            initial_traversal.distances[current_animating_node_id] = traversal.distances[current_animating_node_id];
+        }
         state.red = 255;
         state.green = 255;
         state.current_animating_node++;
@@ -81,12 +91,14 @@ void graphics::GraphEventHandler::handle_animation_step(const sf::Event &event, 
 }
 
 void graphics::GraphEventHandler::handle_animation_finish(graphics::AnimationState &state, algo::Traversal &traversal, algo::Traversal &initial_traversal) {
-    std::shared_ptr<Node> node;
     for (const auto& node : traversal.node_traversal) {
-        node->set_color(sf::Color::White);
+        if (node != nullptr) {
+            node->set_color(sf::Color::White);
+        }
     }
 
     for (const auto& edge : traversal.edge_traversal) {
+        std::cout << "Setting edge to white: " << edge->get_id() << std::endl;
         edge->set_color(sf::Color::White);
     }
 

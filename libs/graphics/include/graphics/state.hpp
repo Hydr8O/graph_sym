@@ -5,11 +5,9 @@
 #include <memory>
 #include <string>
 #include <graphics/edge.hpp>
+#include <graphics/modes.hpp>
 
 namespace graphics {
-    enum Mode {
-        VertexMode, EdgeMode
-    };
 
     struct AnimationState {
         int current_animating_node = 0;
@@ -29,8 +27,8 @@ namespace graphics {
     public:
         AnimationState animation_state;
         AlgorithmState algorithm_state;
-        Mode current_mode = VertexMode;
         int current_selected = -1;
+        graphics::Mode current_mode = VertexMode;
         int current_dst = -1;
         bool creation_finished = false;
         bool running_algorithm = false;

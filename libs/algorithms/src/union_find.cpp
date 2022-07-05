@@ -17,7 +17,11 @@ algo::Traversal algo::UnionFind::run(const graphics::Graph &graph) {
         int src = edge->get_src_id();
         int dst = edge->get_dst_id();
         if (!make_union(src, dst)) {
-            return {};
+            m_traversal.node_traversal.clear();
+            m_traversal.edge_traversal.clear();
+            m_traversal.node_traversal.push_back(nullptr);
+            m_traversal.edge_traversal.push_back(edge);
+            return m_traversal;
         };
 
         m_traversal.node_traversal.push_back(nodes.at(src));

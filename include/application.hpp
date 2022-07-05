@@ -27,6 +27,7 @@
 #include <graphics/graphics_graph.hpp>
 #include <graphics/state.hpp>
 #include <graphics/graph_event_handler.hpp>
+#include <graphics/modes.hpp>
 
 class Application {
 private:
@@ -37,13 +38,14 @@ private:
     sf::Event m_event;
     graphics::State m_state;
     sf::Font m_font;
+    graphics::Modes m_modes;
     algo::AlgorithmRunner m_algo_runner;
     std::unordered_map<int, std::string> m_input_fields;
     std::unordered_map<int, float> m_weight_input_fields;
 
     void handle_sfml_events();
     void handle_algorithm_buttons();
-    void handle_imgui_events(std::unordered_map<graphics::Mode, std::string>& modes);
+    void handle_imgui_events();
     void handle_state_update(algo::Traversal& traversal, algo::Traversal& initial_traversal);
     void handle_sfml_drawing(algo::Traversal& initial_traversal);
 
