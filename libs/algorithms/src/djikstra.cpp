@@ -12,6 +12,10 @@ void algo::Djikstra::init_distances(const WeightedAdjacencyList& adjacency) {
 }
 
 algo::Traversal algo::Djikstra::run(const graphics::Graph& graph) {
+    if (!graph.get_paths().count(m_src)) {
+        return {};
+    }
+    
     const WeightedAdjacencyList& adjacency = graph.get_weighted_paths();
     init_distances(adjacency);
     std::priority_queue<std::pair<float, int>, std::vector<std::pair<float, int>>, std::greater<std::pair<float, int>>> min_heap;
